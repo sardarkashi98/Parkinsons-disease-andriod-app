@@ -1,0 +1,1439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find Nearby Hospitals & Parks</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --primary-dark: #3a56d4;
+            --secondary: #3f37c9;
+            --success: #4cc9f0;
+            --warning: #f8961e;
+            --danger: #f72585;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #6c757d;
+            --light-gray: #e9ecef;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f5f7fa;
+            color: var(--dark);
+            line-height: 1.6;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 1rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow);
+            position: relative;
+            z-index: 100;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            margin: 0;
+            font-size: 1.5rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 0.75rem;
+        }
+        
+        button {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.6rem 1rem;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: var(--shadow);
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        button:disabled {
+            background-color: var(--gray);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        button.secondary {
+            background-color: var(--warning);
+        }
+        
+        button.secondary:hover {
+            background-color: #e07e0c;
+        }
+        
+        button.tertiary {
+            background-color: var(--success);
+        }
+        
+        button.tertiary:hover {
+            background-color: #2fb8e0;
+        }
+        
+        #map-container {
+            flex: 1;
+            width: 100%;
+            position: relative;
+            overflow: hidden;
+            border-radius: 0 0 1rem 1rem;
+            box-shadow: var(--shadow);
+        }
+        
+        #map {
+            height: 100%;
+            width: 100%;
+            min-height: 300px;
+        }
+        
+        #map.loading {
+            background-color: var(--light-gray);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        #status {
+            padding: 0.75rem 1rem;
+            background-color: white;
+            text-align: center;
+            font-size: 0.9rem;
+            color: var(--gray);
+            border-bottom: 1px solid var(--light-gray);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+        
+        .hospital-info, .park-info {
+            max-width: 250px;
+            padding: 0.5rem;
+        }
+        
+        .hospital-info h3, .park-info h3 {
+            margin-top: 0;
+            color: var(--primary);
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .hospital-info p, .park-info p {
+            margin: 0.3rem 0;
+            font-size: 0.9rem;
+        }
+        
+        .rating {
+            color: var(--warning);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+        
+        .travel-time {
+            color: var(--success);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+        
+        .distance {
+            color: var(--danger);
+            font-weight: 600;
+        }
+        
+        .loading-spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-radius: 50%;
+            border-top: 4px solid var(--primary);
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        #results-container {
+            display: flex;
+            flex-direction: column;
+            height: 350px;
+            background-color: white;
+            border-radius: 1rem 1rem 0 0;
+            box-shadow: var(--shadow-lg);
+            margin-top: 1rem;
+            overflow: hidden;
+            transform: translateY(20px);
+            opacity: 0;
+            animation: slideUp 0.5s forwards 0.3s;
+        }
+        
+        @keyframes slideUp {
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        
+        .results-tabs {
+            display: flex;
+            background-color: white;
+            border-bottom: 1px solid var(--light-gray);
+        }
+        
+        .tab-button {
+            flex: 1;
+            padding: 1rem;
+            text-align: center;
+            background-color: white;
+            border: none;
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 500;
+            color: var(--gray);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .tab-button:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 3px;
+            background-color: var(--primary);
+            transition: var(--transition);
+            transform: translateX(-50%);
+        }
+        
+        .tab-button.active {
+            color: var(--primary);
+            font-weight: 600;
+        }
+        
+        .tab-button.active:after {
+            width: 100%;
+        }
+        
+        .tab-button:hover:not(.active) {
+            background-color: var(--light);
+            color: var(--dark);
+        }
+        
+        .results-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1rem;
+            background-color: white;
+        }
+        
+        .result-item {
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+            background-color: white;
+            border-radius: 0.75rem;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            border-left: 4px solid transparent;
+            animation: fadeIn 0.5s ease-out;
+            cursor: pointer;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .result-item:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .result-item.hospital {
+            border-left-color: var(--primary);
+        }
+        
+        .result-item.park {
+            border-left-color: var(--success);
+        }
+        
+        .result-item h3 {
+            margin-top: 0;
+            color: var(--primary);
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .result-item p {
+            margin: 0.3rem 0;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .no-results {
+            text-align: center;
+            padding: 2rem;
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+        
+        .icon {
+            font-size: 0.9rem;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            background-color: var(--light);
+            color: var(--dark);
+        }
+        
+        .badge.hospital {
+            background-color: rgba(67, 97, 238, 0.1);
+            color: var(--primary);
+        }
+        
+        .badge.park {
+            background-color: rgba(76, 201, 240, 0.1);
+            color: var(--success);
+        }
+        
+        .open-now {
+            color: var(--success);
+            font-weight: 600;
+        }
+        
+        .closed-now {
+            color: var(--danger);
+            font-weight: 600;
+        }
+        
+        .filters {
+            display: flex;
+            gap: 0.5rem;
+            padding: 0.75rem 1rem;
+            background-color: white;
+            border-bottom: 1px solid var(--light-gray);
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+        
+        .filters::-webkit-scrollbar {
+            display: none;
+        }
+        
+        .filter-btn {
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            background-color: var(--light);
+            color: var(--dark);
+            border: none;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: var(--transition);
+        }
+        
+        .filter-btn.active {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .filter-btn:hover {
+            background-color: var(--light-gray);
+        }
+        
+        .filter-btn.active:hover {
+            background-color: var(--primary-dark);
+        }
+        
+        .distance-selector {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0 1rem 0.75rem;
+            background-color: white;
+        }
+        
+        .distance-selector label {
+            font-size: 0.85rem;
+            color: var(--gray);
+        }
+        
+        .distance-selector select {
+            padding: 0.5rem;
+            border-radius: 0.5rem;
+            border: 1px solid var(--light-gray);
+            font-family: inherit;
+            background-color: white;
+        }
+        
+        /* Responsive styles */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.2rem;
+            }
+            
+            button {
+                padding: 0.5rem 0.8rem;
+                font-size: 0.8rem;
+            }
+            
+            .results-content {
+                padding: 0.75rem;
+            }
+            
+            .result-item {
+                padding: 0.75rem;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            header {
+                padding: 0.75rem 1rem;
+            }
+            
+            h1 {
+                font-size: 1.1rem;
+            }
+            
+            .button-group {
+                gap: 0.5rem;
+            }
+            
+            button {
+                padding: 0.4rem 0.7rem;
+                font-size: 0.7rem;
+            }
+            
+            .tab-button {
+                padding: 0.75rem;
+                font-size: 0.85rem;
+            }
+        }
+        
+        /* Pulse animation for buttons */
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .pulse {
+            animation: pulse 1.5s infinite;
+        }
+        
+        /* Floating action button */
+        .fab {
+            position: fixed;
+            bottom: 1.5rem;
+            right: 1.5rem;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--shadow-lg);
+            cursor: pointer;
+            z-index: 1000;
+            transition: var(--transition);
+            border: none;
+        }
+        
+        .fab:hover {
+            transform: translateY(-5px) scale(1.1);
+            background-color: var(--primary-dark);
+        }
+        
+        /* Custom scrollbar */
+        .results-content::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .results-content::-webkit-scrollbar-track {
+            background: var(--light-gray);
+        }
+        
+        .results-content::-webkit-scrollbar-thumb {
+            background-color: var(--primary);
+            border-radius: 3px;
+        }
+        
+        /* Directions panel */
+        .directions-panel {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background-color: white;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            box-shadow: var(--shadow-lg);
+            z-index: 10;
+            max-width: 250px;
+            max-height: 300px;
+            overflow-y: auto;
+            display: none;
+        }
+        
+        .close-directions {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background: none;
+            border: none;
+            font-size: 1rem;
+            cursor: pointer;
+            color: var(--gray);
+        }
+        
+        /* Splash screen */
+        .splash-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            transition: opacity 0.5s ease-out;
+        }
+        
+        .splash-logo {
+            font-size: 2.5rem;
+            color: white;
+            margin-bottom: 1rem;
+            animation: bounce 2s infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
+            40% {transform: translateY(-30px);}
+            60% {transform: translateY(-15px);}
+        }
+        
+        .splash-text {
+            color: white;
+            font-size: 1.5rem;
+            font-weight: 500;
+            margin-bottom: 2rem;
+        }
+        
+        .progress-bar {
+            width: 200px;
+            height: 4px;
+            background-color: rgba(255, 255, 255, 0.3);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+        
+        .progress {
+            height: 100%;
+            background-color: white;
+            width: 0;
+            transition: width 0.3s ease;
+        }
+        
+        /* Loading overlay */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1001;
+            display: none;
+        }
+        
+        .loading-content {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 0.5rem;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <!-- Splash Screen -->
+    <div class="splash-screen" id="splashScreen">
+        <div class="splash-logo">
+            <i class="fas fa-map-marked-alt"></i>
+        </div>
+        <div class="splash-text">Hospital Finder</div>
+        <div class="progress-bar">
+            <div class="progress" id="progressBar"></div>
+        </div>
+    </div>
+    
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-content">
+            <div class="loading-spinner"></div>
+            <p id="loadingText">Loading...</p>
+        </div>
+    </div>
+    
+    <header>
+        <div class="header-content">
+            <h1>
+                <i class="fas fa-location-arrow"></i>
+                <span>Hospital Finder</span>
+            </h1>
+            <div class="button-group">
+                <button id="findHospitals" disabled>
+                    <i class="fas fa-hospital"></i>
+                    <span class="btn-text">Hospitals</span>
+                </button>
+                <button id="findParks" disabled class="secondary">
+                    <i class="fas fa-tree"></i>
+                    <span class="btn-text">Parks</span>
+                </button>
+            </div>
+        </div>
+    </header>
+    
+    <div id="map-container">
+        <div id="map" class="loading">
+            <div class="loading-spinner"></div>
+        </div>
+        <div class="directions-panel" id="directionsPanel">
+            <button class="close-directions" id="closeDirections">
+                <i class="fas fa-times"></i>
+            </button>
+            <div id="directionsContent"></div>
+        </div>
+    </div>
+    
+    <div id="status">
+        <i class="fas fa-spinner fa-spin"></i>
+        <span>Initializing map...</span>
+    </div>
+    
+    <div class="filters" id="filtersContainer">
+        <button class="filter-btn active" data-type="all">All</button>
+        <button class="filter-btn" data-type="hospital">Hospitals</button>
+        <button class="filter-btn" data-type="park">Parks</button>
+        <button class="filter-btn" data-type="open">Open Now</button>
+        <button class="filter-btn" data-type="rating">Top Rated</button>
+    </div>
+    
+    <div class="distance-selector">
+        <label for="searchRadius"><i class="fas fa-arrows-alt-h"></i> Search Radius:</label>
+        <select id="searchRadius">
+            <option value="1000">1 km</option>
+            <option value="3000" selected>3 km</option>
+            <option value="5000">5 km</option>
+            <option value="10000">10 km</option>
+        </select>
+    </div>
+    
+    <div id="results-container">
+        <div class="results-tabs">
+            <button class="tab-button active" data-tab="hospitals">
+                <i class="fas fa-hospital"></i>
+                <span>Hospitals</span>
+            </button>
+            <button class="tab-button" data-tab="parks">
+                <i class="fas fa-tree"></i>
+                <span>Parks</span>
+            </button>
+        </div>
+        <div class="results-content">
+            <div id="hospitals-results" class="tab-content">
+                <div class="no-results">
+                    <i class="fas fa-info-circle"></i>
+                    <p>No hospitals found yet. Click "Find Hospitals" to search.</p>
+                </div>
+            </div>
+            <div id="parks-results" class="tab-content" style="display: none;">
+                <div class="no-results">
+                    <i class="fas fa-info-circle"></i>
+                    <p>No parks found yet. Click "Find Parks" to search.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <button class="fab" id="locateMe" title="Locate Me">
+        <i class="fas fa-location-arrow"></i>
+    </button>
+
+    <script>
+        // Initialize the map
+        let map;
+        let markers = [];
+        let infoWindow;
+        let userLocation = null;
+        let mapLoaded = false;
+        let directionsService;
+        let directionsRenderer;
+        let placesService;
+        let currentPlaceType = '';
+        let allPlaces = [];
+        
+        // Your Google Maps API key
+        const apiKey = 'AIzaSyCLYwWqZ7YXk4GXEUsBVbyF57en07Hdyj8';
+        
+        // Simulate loading progress
+        const splashScreen = document.getElementById('splashScreen');
+        const progressBar = document.getElementById('progressBar');
+        const loadingOverlay = document.getElementById('loadingOverlay');
+        const loadingText = document.getElementById('loadingText');
+        
+        let progress = 0;
+        const progressInterval = setInterval(() => {
+            progress += 10;
+            progressBar.style.width = `${progress}%`;
+            
+            if (progress >= 100) {
+                clearInterval(progressInterval);
+                setTimeout(() => {
+                    splashScreen.style.opacity = '0';
+                    setTimeout(() => {
+                        splashScreen.style.display = 'none';
+                    }, 500);
+                }, 300);
+            }
+        }, 300);
+        
+        function showLoading(message) {
+            loadingText.textContent = message;
+            loadingOverlay.style.display = 'flex';
+        }
+        
+        function hideLoading() {
+            loadingOverlay.style.display = 'none';
+        }
+        
+        function initMap() {
+            try {
+                // Remove loading class
+                const mapElement = document.getElementById('map');
+                mapElement.classList.remove('loading');
+                
+                // Create the map centered on a default location (will be updated to user's location)
+                map = new google.maps.Map(mapElement, {
+                    center: {lat: 0, lng: 0},
+                    zoom: 12,
+                    styles: [
+                        {
+                            "featureType": "poi.medical",
+                            "elementType": "labels.icon",
+                            "stylers": [
+                                {
+                                    "visibility": "on"
+                                }
+                            ]
+                        },
+                        {
+                            "featureType": "poi.park",
+                            "elementType": "geometry.fill",
+                            "stylers": [
+                                {
+                                    "color": "#d3f1d5"
+                                }
+                            ]
+                        }
+                    ]
+                });
+                
+                // Initialize directions service and renderer
+                directionsService = new google.maps.DirectionsService();
+                directionsRenderer = new google.maps.DirectionsRenderer({
+                    suppressMarkers: true,
+                    panel: document.getElementById('directionsContent')
+                });
+                directionsRenderer.setMap(map);
+                
+                // Initialize places service
+                placesService = new google.maps.places.PlacesService(map);
+                
+                // Create an info window to display place details
+                infoWindow = new google.maps.InfoWindow({
+                    maxWidth: 250
+                });
+                
+                // Enable the find buttons
+                document.getElementById('findHospitals').disabled = false;
+                document.getElementById('findParks').disabled = false;
+                
+                // Set up tab switching
+                setupTabs();
+                
+                // Set up filters
+                setupFilters();
+                
+                // Set up locate me button
+                document.getElementById('locateMe').addEventListener('click', locateUser);
+                
+                // Set up close directions button
+                document.getElementById('closeDirections').addEventListener('click', () => {
+                    document.getElementById('directionsPanel').style.display = 'none';
+                    directionsRenderer.setDirections({routes: []});
+                });
+                
+                // Try to get the user's current location
+                if (navigator.geolocation) {
+                    updateStatus('Getting your location...', 'fas fa-spinner fa-spin');
+                    
+                    navigator.geolocation.getCurrentPosition(
+                        (position) => {
+                            userLocation = {
+                                lat: position.coords.latitude,
+                                lng: position.coords.longitude
+                            };
+                            
+                            // Center the map on the user's location
+                            map.setCenter(userLocation);
+                            map.setZoom(15);
+                            
+                            // Add a marker for the user's location
+                            new google.maps.Marker({
+                                position: userLocation,
+                                map: map,
+                                title: 'Your Location',
+                                icon: {
+                                    url: 'https://maps.google.com/mapfiles/ms/icons/blue-dot.png'
+                                },
+                                animation: google.maps.Animation.DROP
+                            });
+                            
+                            updateStatus('Map ready. Click buttons to find nearby places.', 'fas fa-check-circle');
+                            mapLoaded = true;
+                            
+                            // Pulse the buttons to draw attention
+                            document.getElementById('findHospitals').classList.add('pulse');
+                            document.getElementById('findParks').classList.add('pulse');
+                            setTimeout(() => {
+                                document.getElementById('findHospitals').classList.remove('pulse');
+                                document.getElementById('findParks').classList.remove('pulse');
+                            }, 3000);
+                        },
+                        (error) => {
+                            // If geolocation fails, use a default location
+                            handleGeolocationError(error);
+                        },
+                        {
+                            enableHighAccuracy: true,
+                            timeout: 10000,
+                            maximumAge: 0
+                        }
+                    );
+                } else {
+                    // Browser doesn't support Geolocation
+                    handleGeolocationError({ code: 0 });
+                }
+                
+                // Set up the buttons
+                document.getElementById('findHospitals').addEventListener('click', () => {
+                    currentPlaceType = 'hospital';
+                    findNearbyPlaces('hospital');
+                });
+                
+                document.getElementById('findParks').addEventListener('click', () => {
+                    currentPlaceType = 'park';
+                    findNearbyPlaces('park');
+                });
+                
+                // Set up search radius change
+                document.getElementById('searchRadius').addEventListener('change', () => {
+                    if (currentPlaceType) {
+                        findNearbyPlaces(currentPlaceType);
+                    }
+                });
+            } catch (error) {
+                updateStatus('Error initializing map: ' + error.message, 'fas fa-exclamation-circle');
+                console.error('Map initialization error:', error);
+            }
+        }
+        
+        function setupTabs() {
+            const tabs = document.querySelectorAll('.tab-button');
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    // Remove active class from all tabs
+                    tabs.forEach(t => t.classList.remove('active'));
+                    // Add active class to clicked tab
+                    tab.classList.add('active');
+                    
+                    // Hide all tab contents
+                    document.querySelectorAll('.tab-content').forEach(content => {
+                        content.style.display = 'none';
+                    });
+                    
+                    // Show the selected tab content
+                    const tabName = tab.getAttribute('data-tab');
+                    document.getElementById(`${tabName}-results`).style.display = 'block';
+                    
+                    // If we have results, apply current filter
+                    if (allPlaces.length > 0) {
+                        applyFilter(document.querySelector('.filter-btn.active').dataset.type);
+                    }
+                });
+            });
+        }
+        
+        function setupFilters() {
+            const filters = document.querySelectorAll('.filter-btn');
+            filters.forEach(filter => {
+                filter.addEventListener('click', () => {
+                    // Remove active class from all filters
+                    filters.forEach(f => f.classList.remove('active'));
+                    // Add active class to clicked filter
+                    filter.classList.add('active');
+                    
+                    // Apply the filter
+                    applyFilter(filter.dataset.type);
+                });
+            });
+        }
+        
+        function applyFilter(filterType) {
+            const activeTab = document.querySelector('.tab-button.active').dataset.tab;
+            const resultsContainer = document.getElementById(`${activeTab}-results`);
+            const resultItems = resultsContainer.querySelectorAll('.result-item');
+            
+            resultItems.forEach(item => {
+                item.style.display = 'none';
+                
+                const isHospital = item.classList.contains('hospital');
+                const isPark = item.classList.contains('park');
+                const isOpen = item.dataset.open === 'true';
+                const rating = parseFloat(item.dataset.rating) || 0;
+                
+                let shouldShow = false;
+                
+                switch(filterType) {
+                    case 'all':
+                        shouldShow = true;
+                        break;
+                    case 'hospital':
+                        shouldShow = isHospital;
+                        break;
+                    case 'park':
+                        shouldShow = isPark;
+                        break;
+                    case 'open':
+                        shouldShow = isOpen;
+                        break;
+                    case 'rating':
+                        shouldShow = rating >= 4;
+                        break;
+                    default:
+                        shouldShow = true;
+                }
+                
+                if (shouldShow) {
+                    item.style.display = 'block';
+                    item.style.animation = 'fadeIn 0.5s ease-out';
+                }
+            });
+            
+            // Check if any results are visible
+            const visibleResults = resultsContainer.querySelectorAll('.result-item[style="display: block;"]');
+            const noResultsMessage = resultsContainer.querySelector('.no-results');
+            
+            if (visibleResults.length === 0 && resultItems.length > 0) {
+                if (!noResultsMessage) {
+                    const message = document.createElement('div');
+                    message.className = 'no-results';
+                    message.innerHTML = `
+                        <i class="fas fa-info-circle"></i>
+                        <p>No places match the current filter.</p>
+                    `;
+                    resultsContainer.appendChild(message);
+                }
+            } else if (noResultsMessage && visibleResults.length > 0) {
+                noResultsMessage.remove();
+            }
+        }
+        
+        function locateUser() {
+            if (navigator.geolocation) {
+                updateStatus('Getting your current location...', 'fas fa-spinner fa-spin');
+                
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        const newLocation = {
+                            lat: position.coords.latitude,
+                            lng: position.coords.longitude
+                        };
+                        
+                        // Only update if the location has changed significantly
+                        if (!userLocation || 
+                            getDistance(userLocation, newLocation) > 0.1) {
+                            userLocation = newLocation;
+                            
+                            // Clear existing markers
+                            clearMarkers();
+                            
+                            // Center the map on the user's location
+                            map.setCenter(userLocation);
+                            map.setZoom(15);
+                            
+                            // Add a marker for the user's location
+                            new google.maps.Marker({
+                                position: userLocation,
+                                map: map,
+                                title: 'Your Location',
+                                icon: {
+                                    url: 'https://maps.google.com/mapfiles/ms/icons/blue-dot.png'
+                                },
+                                animation: google.maps.Animation.BOUNCE
+                            });
+                            
+                            updateStatus('Location updated.', 'fas fa-check-circle');
+                            
+                            // If we were showing places, refresh them
+                            if (currentPlaceType) {
+                                findNearbyPlaces(currentPlaceType);
+                            }
+                        } else {
+                            updateStatus('You are already at this location.', 'fas fa-info-circle');
+                        }
+                    },
+                    (error) => {
+                        updateStatus('Could not get your location: ' + error.message, 'fas fa-exclamation-circle');
+                    },
+                    {
+                        enableHighAccuracy: true,
+                        timeout: 10000,
+                        maximumAge: 0
+                    }
+                );
+            } else {
+                updateStatus('Geolocation is not supported by your browser.', 'fas fa-exclamation-circle');
+            }
+        }
+        
+        function handleGeolocationError(error) {
+            let errorMessage = 'Could not get your location. ';
+            
+            switch(error.code) {
+                case error.PERMISSION_DENIED:
+                    errorMessage += 'Permission denied.';
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    errorMessage += 'Position unavailable.';
+                    break;
+                case error.TIMEOUT:
+                    errorMessage += 'Request timed out.';
+                    break;
+                default:
+                    errorMessage += 'Geolocation not supported.';
+            }
+            
+            userLocation = {lat: 40.7128, lng: -74.0060}; // New York as fallback
+            if (map) {
+                map.setCenter(userLocation);
+            }
+            
+            updateStatus(errorMessage + ' Showing New York. Click buttons to find nearby places.', 'fas fa-info-circle');
+            mapLoaded = true;
+        }
+        
+        function findNearbyPlaces(placeType) {
+            if (!mapLoaded) {
+                updateStatus('Map is not ready yet. Please wait.', 'fas fa-spinner fa-spin');
+                return;
+            }
+            
+            if (!userLocation) {
+                updateStatus('Location not available.', 'fas fa-exclamation-circle');
+                return;
+            }
+            
+            const button = placeType === 'hospital' 
+                ? document.getElementById('findHospitals') 
+                : document.getElementById('findParks');
+                
+            button.disabled = true;
+            updateStatus(`Searching for nearby ${placeType}s...`, 'fas fa-search');
+            showLoading(`Finding nearby ${placeType}s...`);
+            
+            // Clear any existing markers
+            clearMarkers();
+            
+            // Get search radius from dropdown
+            const radius = parseInt(document.getElementById('searchRadius').value);
+            
+            // Search for places within the selected radius of the user's location
+            const request = {
+                location: userLocation,
+                radius: radius,
+                type: placeType === 'hospital' ? 'hospital' : 'park',
+                keyword: placeType === 'hospital' ? 'hospital' : 'park'
+            };
+            
+            placesService.nearbySearch(request, (results, status, pagination) => {
+                button.disabled = false;
+                hideLoading();
+                
+                if (status === google.maps.places.PlacesServiceStatus.OK) {
+                    updateStatus(`Found ${results.length} ${placeType}s nearby.`, 'fas fa-check-circle');
+                    
+                    // Sort results by distance
+                    results.sort((a, b) => {
+                        const distA = getDistance(userLocation, a.geometry.location);
+                        const distB = getDistance(userLocation, b.geometry.location);
+                        return distA - distB;
+                    });
+                    
+                    // Store all places for filtering
+                    allPlaces = results.map(place => ({
+                        ...place,
+                        type: placeType,
+                        distance: getDistance(userLocation, place.geometry.location)
+                    }));
+                    
+                    // Clear previous results
+                    const resultsContainer = document.getElementById(`${placeType}s-results`);
+                    resultsContainer.innerHTML = '';
+                    
+                    if (results.length === 0) {
+                        resultsContainer.innerHTML = `
+                            <div class="no-results">
+                                <i class="fas fa-info-circle"></i>
+                                <p>No ${placeType}s found in this area.</p>
+                            </div>
+                        `;
+                        return;
+                    }
+                    
+                    // Process each result
+                    results.forEach((place, index) => {
+                        // Create marker for the place
+                        createPlaceMarker(place, placeType);
+                        
+                        // Calculate distance
+                        const distance = getDistance(userLocation, place.geometry.location);
+                        
+                        // Create result item in the list
+                        const resultItem = document.createElement('div');
+                        resultItem.className = `result-item ${placeType}`;
+                        resultItem.dataset.rating = place.rating || 0;
+                        resultItem.dataset.open = place.opening_hours?.open_now || false;
+                        
+                        resultItem.innerHTML = `
+                            <h3>
+                                <i class="fas fa-${placeType === 'hospital' ? 'hospital' : 'tree'}"></i>
+                                                               ${place.name}
+                            </h3>
+                            <p>
+                                <i class="fas fa-map-marker-alt icon"></i>
+                                ${place.vicinity || 'Address not available'}
+                            </p>
+                            <p>
+                                <i class="fas fa-route icon"></i>
+                                <span class="distance">${distance.toFixed(1)} km away</span>
+                            </p>
+                            ${place.rating ? `
+                            <p>
+                                <i class="fas fa-star icon"></i>
+                                <span class="rating">${place.rating} (${place.user_ratings_total || 0} reviews)</span>
+                            </p>
+                            ` : ''}
+                            ${place.opening_hours ? `
+                            <p>
+                                <i class="fas fa-clock icon"></i>
+                                <span class="${place.opening_hours.open_now ? 'open-now' : 'closed-now'}">
+                                    ${place.opening_hours.open_now ? 'Open Now' : 'Closed Now'}
+                                </span>
+                            </p>
+                            ` : ''}
+                        `;
+                        
+                        // Add click event to center map on the place
+                        resultItem.addEventListener('click', () => {
+                            map.setCenter(place.geometry.location);
+                            map.setZoom(16);
+                            
+                            // Highlight the marker
+                            markers.forEach(marker => {
+                                if (marker.placeId === place.place_id) {
+                                    marker.setAnimation(google.maps.Animation.BOUNCE);
+                                    setTimeout(() => {
+                                        marker.setAnimation(null);
+                                    }, 1500);
+                                }
+                            });
+                        });
+                        
+                        resultsContainer.appendChild(resultItem);
+                    });
+                    
+                    // Show the tab if not already active
+                    if (!document.querySelector(`.tab-button[data-tab="${placeType}s"]`).classList.contains('active')) {
+                        document.querySelector(`.tab-button[data-tab="${placeType}s"]`).click();
+                    }
+                    
+                    // Apply current filter
+                    applyFilter(document.querySelector('.filter-btn.active').dataset.type);
+                    
+                    // If there are more results, show a "Load More" button
+                    if (pagination && pagination.hasNextPage) {
+                        const loadMoreBtn = document.createElement('button');
+                        loadMoreBtn.className = 'secondary';
+                        loadMoreBtn.style.margin = '1rem auto';
+                        loadMoreBtn.style.display = 'block';
+                        loadMoreBtn.innerHTML = `
+                            <i class="fas fa-plus"></i>
+                            <span>Load More Results</span>
+                        `;
+                        
+                        loadMoreBtn.addEventListener('click', () => {
+                            loadMoreBtn.disabled = true;
+                            loadMoreBtn.innerHTML = `
+                                <i class="fas fa-spinner fa-spin"></i>
+                                <span>Loading...</span>
+                            `;
+                            
+                            pagination.nextPage();
+                        });
+                        
+                        resultsContainer.appendChild(loadMoreBtn);
+                    }
+                } else {
+                    updateStatus(`Could not find ${placeType}s: ${status}`, 'fas fa-exclamation-circle');
+                    
+                    const resultsContainer = document.getElementById(`${placeType}s-results`);
+                    resultsContainer.innerHTML = `
+                        <div class="no-results">
+                            <i class="fas fa-info-circle"></i>
+                            <p>Could not find ${placeType}s in this area. (${status})</p>
+                        </div>
+                    `;
+                }
+            });
+        }
+        
+        function createPlaceMarker(place, placeType) {
+            const marker = new google.maps.Marker({
+                position: place.geometry.location,
+                map: map,
+                title: place.name,
+                icon: {
+                    url: placeType === 'hospital' 
+                        ? 'https://maps.google.com/mapfiles/ms/icons/red-dot.png'
+                        : 'https://maps.google.com/mapfiles/ms/icons/green-dot.png',
+                    scaledSize: new google.maps.Size(32, 32)
+                },
+                animation: google.maps.Animation.DROP,
+                placeId: place.place_id
+            });
+            
+            markers.push(marker);
+            
+            // Add click event to show info window
+            marker.addListener('click', () => {
+                // Get more details about the place
+                const request = {
+                    placeId: place.place_id,
+                    fields: ['name', 'formatted_address', 'rating', 'user_ratings_total', 
+                            'opening_hours', 'website', 'formatted_phone_number']
+                };
+                
+                placesService.getDetails(request, (placeResult, status) => {
+                    if (status === google.maps.places.PlacesServiceStatus.OK) {
+                        const distance = getDistance(userLocation, place.geometry.location);
+                        
+                        let content = '';
+                        if (placeType === 'hospital') {
+                            content = `
+                                <div class="hospital-info">
+                                    <h3>${placeResult.name}</h3>
+                                    <p><i class="fas fa-map-marker-alt"></i> ${placeResult.formatted_address || 'Address not available'}</p>
+                                    <p><i class="fas fa-route"></i> <span class="distance">${distance.toFixed(1)} km away</span></p>
+                                    ${placeResult.rating ? `<p><i class="fas fa-star"></i> <span class="rating">${placeResult.rating} (${placeResult.user_ratings_total || 0} reviews)</span></p>` : ''}
+                                    ${placeResult.opening_hours ? `<p><i class="fas fa-clock"></i> <span class="${placeResult.opening_hours.open_now ? 'open-now' : 'closed-now'}">${placeResult.opening_hours.open_now ? 'Open Now' : 'Closed Now'}</span></p>` : ''}
+                                    ${placeResult.formatted_phone_number ? `<p><i class="fas fa-phone"></i> ${placeResult.formatted_phone_number}</p>` : ''}
+                                    ${placeResult.website ? `<p><i class="fas fa-globe"></i> <a href="${placeResult.website}" target="_blank">Website</a></p>` : ''}
+                                    <button onclick="showDirections('${placeResult.name}', ${place.geometry.location.lat()}, ${place.geometry.location.lng()})" style="margin-top: 0.5rem; padding: 0.3rem 0.6rem; font-size: 0.8rem;">
+                                        <i class="fas fa-directions"></i> Get Directions
+                                    </button>
+                                </div>
+                            `;
+                        } else {
+                            content = `
+                                <div class="park-info">
+                                    <h3>${placeResult.name}</h3>
+                                    <p><i class="fas fa-map-marker-alt"></i> ${placeResult.formatted_address || 'Address not available'}</p>
+                                    <p><i class="fas fa-route"></i> <span class="distance">${distance.toFixed(1)} km away</span></p>
+                                    ${placeResult.rating ? `<p><i class="fas fa-star"></i> <span class="rating">${placeResult.rating} (${placeResult.user_ratings_total || 0} reviews)</span></p>` : ''}
+                                    ${placeResult.opening_hours ? `<p><i class="fas fa-clock"></i> <span class="${placeResult.opening_hours.open_now ? 'open-now' : 'closed-now'}">${placeResult.opening_hours.open_now ? 'Open Now' : 'Closed Now'}</span></p>` : ''}
+                                    <button onclick="showDirections('${placeResult.name}', ${place.geometry.location.lat()}, ${place.geometry.location.lng()})" style="margin-top: 0.5rem; padding: 0.3rem 0.6rem; font-size: 0.8rem;">
+                                        <i class="fas fa-directions"></i> Get Directions
+                                    </button>
+                                </div>
+                            `;
+                        }
+                        
+                        infoWindow.setContent(content);
+                        infoWindow.open(map, marker);
+                    } else {
+                        infoWindow.setContent(`<div><h3>${place.name}</h3><p>Could not load details.</p></div>`);
+                        infoWindow.open(map, marker);
+                    }
+                });
+            });
+        }
+        
+        function showDirections(placeName, lat, lng) {
+            if (!userLocation) {
+                alert('Your location is not available.');
+                return;
+            }
+            
+            showLoading('Calculating directions...');
+            
+            const destination = new google.maps.LatLng(lat, lng);
+            
+            const request = {
+                origin: userLocation,
+                destination: destination,
+                travelMode: google.maps.TravelMode.DRIVING
+            };
+            
+            directionsService.route(request, (result, status) => {
+                hideLoading();
+                
+                if (status === google.maps.DirectionsStatus.OK) {
+                    directionsRenderer.setDirections(result);
+                    
+                    // Show directions panel
+                    document.getElementById('directionsPanel').style.display = 'block';
+                    document.getElementById('directionsContent').innerHTML = `
+                        <h3>Directions to ${placeName}</h3>
+                    `;
+                } else {
+                    alert('Could not get directions: ' + status);
+                }
+            });
+        }
+        
+        function clearMarkers() {
+            markers.forEach(marker => marker.setMap(null));
+            markers = [];
+            infoWindow.close();
+        }
+        
+        function updateStatus(message, iconClass) {
+            const statusElement = document.getElementById('status');
+            statusElement.innerHTML = `
+                <i class="${iconClass}"></i>
+                <span>${message}</span>
+            `;
+        }
+        
+        function getDistance(location1, location2) {
+            // Convert latitude and longitude to radians
+            const lat1 = location1.lat * Math.PI / 180;
+            const lon1 = location1.lng * Math.PI / 180;
+            const lat2 = (typeof location2.lat === 'function' ? location2.lat() : location2.lat) * Math.PI / 180;
+            const lon2 = (typeof location2.lng === 'function' ? location2.lng() : location2.lng) * Math.PI / 180;
+            
+            // Haversine formula
+            const dLat = lat2 - lat1;
+            const dLon = lon2 - lon1;
+            
+            const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                      Math.cos(lat1) * Math.cos(lat2) *
+                      Math.sin(dLon / 2) * Math.sin(dLon / 2);
+            
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+            
+            // Earth's radius in km
+            const R = 6371;
+            
+            return R * c;
+        }
+        
+        // Load Google Maps API
+        function loadGoogleMaps() {
+            const script = document.createElement('script');
+            script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places&callback=initMap`;
+            script.async = true;
+            script.defer = true;
+            document.head.appendChild(script);
+        }
+        
+        // Start the application
+        window.onload = loadGoogleMaps;
+    </script>
+</body>
+</html>

@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/gradient_background"
+    tools:context=".SpiralDetectionActivity">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="20dp">
+
+            <TextView
+                android:id="@+id/spiralDetectionHeading"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Spiral Image Detection"
+                android:textSize="26sp"
+                android:textStyle="bold"
+                android:textColor="#3d5a80"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginTop="40dp"
+                android:gravity="center" />
+
+            <ImageView
+                android:id="@+id/spiralImageView"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:layout_constraintTop_toBottomOf="@id/spiralDetectionHeading"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintDimensionRatio="1:1"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp"
+                android:src="@drawable/sample_spiral"
+                android:contentDescription="Spiral Image"
+                android:scaleType="centerInside" />
+
+            <Button
+                android:id="@+id/selectGalleryButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Select Image from Gallery"
+                android:textColor="#FFFFFF"
+                android:layout_margin="16dp"
+                android:backgroundTint="?attr/colorPrimary"
+                android:padding="12dp"
+                app:layout_constraintTop_toBottomOf="@id/spiralImageView"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginTop="24dp"/>
+
+            <Button
+                android:id="@+id/captureCameraButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Capture Image with Camera"
+                android:textColor="#FFFFFF"
+                android:layout_margin="16dp"
+                android:backgroundTint="?attr/colorPrimary"
+                android:padding="12dp"
+                app:layout_constraintTop_toBottomOf="@id/selectGalleryButton"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginTop="16dp"/>
+
+            <Button
+                android:id="@+id/startDetectionButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Start Detection"
+                android:textColor="#FFFFFF"
+                android:layout_margin="16dp"
+                android:backgroundTint="?attr/colorPrimary"
+                android:padding="12dp"
+                app:layout_constraintTop_toBottomOf="@id/captureCameraButton"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginTop="32dp"/>
+
+            <TextView
+                android:id="@+id/resultTextView"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:layout_marginTop="20dp"
+                app:layout_constraintTop_toBottomOf="@id/startDetectionButton"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:gravity="center"
+                android:padding="16dp"
+                android:background="@drawable/result_background"
+                android:visibility="invisible"/>
+
+            <TextView
+                android:id="@+id/confidenceTextView"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:textSize="18sp"
+                android:layout_marginTop="8dp"
+                app:layout_constraintTop_toBottomOf="@id/resultTextView"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:gravity="center"
+                android:padding="12dp"
+                android:background="@drawable/confidence_background"
+                android:visibility="invisible"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>

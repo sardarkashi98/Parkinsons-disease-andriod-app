@@ -1,0 +1,283 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/gradient_background"
+    tools:context=".HomeFragment">
+
+    <LinearLayout
+        android:id="@+id/mainLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <!-- Logout Button at top-left -->
+        <Button
+            android:id="@+id/logoutButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Logout"
+            android:textColor="#FFFFFF"
+            android:backgroundTint="#FF5722"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="20dp"
+            android:paddingHorizontal="20dp"
+            android:textSize="14sp"
+            android:onClick="onLogoutClick"/>
+
+        <!-- Heading with new style -->
+        <TextView
+            android:id="@+id/heading"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="Parkinson's Disease Detection"
+            android:textSize="30sp"
+            android:textStyle="bold"
+            android:textColor="#FFFFFF"
+            android:layout_marginBottom="20dp" />
+
+        <!-- New Image below Heading -->
+        <ImageView
+            android:id="@+id/headingImage"
+            android:layout_width="match_parent"
+            android:layout_height="250dp"
+            android:layout_marginBottom="20dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/sample_image"
+            android:layout_marginTop="10dp"/>
+
+        <!-- Introduction Heading -->
+        <TextView
+            android:id="@+id/introHeading"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="What is Parkinson's Disease?"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="#FFFFFF"
+            android:layout_marginBottom="12dp"/>
+
+        <!-- Introduction Paragraph -->
+        <TextView
+            android:id="@+id/introParagraph"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Parkinson's disease is a progressive nervous system disorder that affects movement. It develops gradually, often starting with a tremor in one hand."
+            android:textSize="16sp"
+            android:textColor="@color/black"
+            android:layout_marginBottom="20dp"/>
+
+        <!-- Symptoms Section -->
+        <TextView
+            android:id="@+id/symptomsHeading"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Symptoms of Parkinson's Disease:"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="#FFFFFF"
+            android:layout_marginBottom="8dp"/>
+
+        <!-- Symptoms list -->
+        <TextView
+            android:id="@+id/symptomsList"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="• Tremors in hands, arms, legs, or jaw.\n• Stiffness of limbs.\n• Slowness of movement.\n• Impaired balance and coordination."
+            android:textSize="16sp"
+            android:textColor="@color/black"
+            android:layout_marginBottom="20dp"/>
+
+        <!-- Wave Images Card -->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/waveCard"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            app:cardElevation="10dp"
+            app:cardCornerRadius="20dp"
+            android:alpha="0"
+            android:translationY="50dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="15dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Wave Images"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="#333333"/>
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:layout_marginTop="8dp"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/wave_image" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="Using CNN models, we process wave images for detecting Parkinson's disease with an accuracy of 89%."
+                    android:textSize="14sp"
+                    android:textColor="#555555"/>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- Spiral Images Card -->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/spiralCard"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            app:cardElevation="10dp"
+            app:cardCornerRadius="20dp"
+            android:alpha="0"
+            android:translationY="50dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="15dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Spiral Images"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="#333333"/>
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:layout_marginTop="8dp"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/spiral_image" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="Spiral image analysis helps detect Parkinson's disease with a precision of 89%."
+                    android:textSize="14sp"
+                    android:textColor="#555555"/>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- Voice Frequency Card -->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/voiceCard"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            app:cardElevation="10dp"
+            app:cardCornerRadius="20dp"
+            android:alpha="0"
+            android:translationY="50dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="15dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Voice Frequency Analysis"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="#333333"/>
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:layout_marginTop="8dp"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/voice_frequency" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="Voice frequency features are analyzed to detect Parkinson's disease with reliable results."
+                    android:textSize="14sp"
+                    android:textColor="#555555"/>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- More Information Section -->
+        <TextView
+            android:id="@+id/moreInfoHeading"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="More Information:"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="#FFFFFF"
+            android:layout_marginBottom="8dp"/>
+
+        <TextView
+            android:id="@+id/moreInfoText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Learn more about Parkinson's disease research, ongoing studies, and treatment options."
+            android:textSize="16sp"
+            android:textColor="@color/black"
+            android:layout_marginBottom="20dp"/>
+
+        <!-- Contact Us Section -->
+        <TextView
+            android:id="@+id/contactHeading"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Contact Us"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="#141313"
+            android:layout_marginBottom="8dp"/>
+
+        <TextView
+            android:id="@+id/contactEmail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Email: support@parkinsonsapp.com"
+            android:textSize="16sp"
+            android:textColor="@color/cardBackground"
+            android:layout_marginBottom="4dp" />
+
+        <TextView
+            android:id="@+id/contactPhone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Phone: +123-456-7890"
+            android:textSize="16sp"
+            android:textColor="#181717"
+            android:layout_marginBottom="20dp" />
+
+        <!-- Read More Button -->
+        <Button
+            android:id="@+id/readMoreButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Read More About Parkinson's"
+            android:textColor="#ED0615"
+            android:layout_gravity="center"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/card_gradient_background"
+            android:onClick="openParkinsonsWebsite" />
+
+    </LinearLayout>
+</ScrollView>

@@ -1,0 +1,62 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- Basic Colors -->
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+
+    <!-- Theme Colors -->
+    <color name="colorPrimary">#11CFC5</color>
+    <color name="colorPrimaryDark">#000000</color>
+    <color name="colorAccent">#FF402D</color>
+
+    <!-- Colors for Light Mode -->
+
+
+    <!-- Colors for Dark Mode -->
+    <color name="darkContentBodyColor">#121212</color>
+    <color name="darkContentTextColor">#282626</color>
+    <color name="darkMiniTitle">#141313</color>
+    <color name="darkColorPrimary">#121212</color>
+    <color name="darkColorAccent">#121212</color>
+    <!--colors for dark mode-->
+    <color name="contentBodyColor">#000</color>
+    <color name="contentTextColor">#121212</color>
+    <color name="miniTitle">#070707</color>
+
+    <!-- Additional Colors -->
+    <color name="colorHint">#B0B0B0</color>
+    <color name="bottom_nav_colors">#FF4081</color>
+    <color name="gray">#808080</color>
+    <color name="purple_500">#6200EE</color>
+    <color name="purple_700">#3700B3</color>
+    <color name="teal_200">#03DAC5</color>
+    <color name="dark_gray">#121212</color>
+    <color name="imageBorderColor">#FF0000</color>
+    <color name="red">#FF0000</color>
+
+    <color name="colorBackground">#F1F8E9</color> <!-- Light Green Background -->
+    <color name="colorError">#F44336</color> <!-- Red for error messages -->
+    <color name="textColorPrimary">#212121</color> <!-- Dark Text Color -->
+    <color name="textColorSecondary">#757575</color> <!-- Light Text Color -->
+    <color name="darkTextColor">#333333</color> <!-- Change the color code as needed -->
+
+    <color name="green_500">#4CAF50</color> <!-- A common green shade -->
+ <!-- Standard red shade -->
+    <color name="orange_primary">#FF9800</color>
+    <color name="orange_dark">#F57C00</color>
+    <color name="orange_light">#FFE0B2</color>
+
+    <color name="colorPrimaryLight">#FF9B9B</color>
+    <color name="cardBackground">#F8F9FA</color>
+    <color name="cardStroke">#E9ECEF</color>
+    <color name="textPrimary">#212529</color>
+    <color name="orange_500">#FF9800</color>
+    <color name="orange_700">#F57C00</color>
+    <color name="red_500">#F44336</color>
+    <color name="red_700">#D32F2F</color>
+    <color name="blue_500">#2196F3</color>
+    <color name="blue_700">#1976D2</color>
+    <color name="rippleColor">#FF0000</color> <!-- Use the color you need -->
+
+    <!-- Replace with your desired color -->
+</resources>

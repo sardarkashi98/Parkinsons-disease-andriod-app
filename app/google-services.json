@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "194356027214",
+    "firebase_url": "https://parkinson-c8db8-default-rtdb.firebaseio.com",
+    "project_id": "parkinson-c8db8",
+    "storage_bucket": "parkinson-c8db8.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:194356027214:android:8e8f548d1694fafa2f081f",
+        "android_client_info": {
+          "package_name": "com.amr.parkinsondisease"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "194356027214-obp07a674s2gka117b4e53sj2t1a1i8g.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA6_ZkdriJp3WljiVw9WM-AhU3TgCBlXoA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "194356027214-obp07a674s2gka117b4e53sj2t1a1i8g.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,18 @@
+<resources>
+
+    <string name="app_name">ParkVision</string>
+    <string name="spiral_image">Spiral Image</string>
+    <string name="wave_image">Wave Image</string>
+    <string name="voice_frequency">Voice Frequency</string>
+    <string name="fab_add_description">Add new item</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="diet_plan_header">Personalized Diet Plan for %1$s, Age %2$d\n\n</string>
+
+
+
+
+
+
+
+</resources>
