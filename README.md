@@ -27,5 +27,5 @@ This app offers:
 </p>
 
 <p align="left">
-  <img src="https://github.com/user-attachments/assets/34e7062b-a0ca-43f0-befb-4863ac592c05" width="45%" />
+  <img src="https://github.com/user-attachments/assets/34e7062b-a0ca-43f0-befb-4863ac592c05" width="25%" />
 </p>
