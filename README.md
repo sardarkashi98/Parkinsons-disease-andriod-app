@@ -6,6 +6,8 @@ Early detection of Parkinson’s using spiral images (CNN, 91% accuracy), wave i
 <img width="1080" height="2460" alt="image" src="https://github.com/user-attachments/assets/8b15aacb-778a-4eff-be15-cc610313012b" />
 <img width="1080" height="2460" alt="image" src="https://github.com/user-attachments/assets/40cbb47a-2f71-49fa-a452-f4308673dba7" />
 <img width="1080" height="2460" alt="image" src="https://github.com/user-attachments/assets/34e7062b-a0ca-43f0-befb-4863ac592c05" />
+<img width="1080" height="2460" alt="image" src="https://github.com/user-attachments/assets/3c99b695-eead-4fd8-a3c1-b8bfa517ae3d" />
+
 
 
 
